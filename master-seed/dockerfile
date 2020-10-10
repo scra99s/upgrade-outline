@@ -2,6 +2,8 @@ FROM ubuntu:focal
 
 COPY build .
 
+## RUN docker build --tag app1 .... etc
+
 # Create docker images tarball
 RUN docker pull registry:latest \
   && docker pull apline:latest \
@@ -12,7 +14,7 @@ RUN docker pull registry:latest \
   && tar -czvf docker-images.tgz docker-images \
   && rm -r docker-images
 
-# Create master cloud-init seed.iso
+# Create master cloud-init seed.iso ... & other nodes (other nodes will be simpler as master node will seed most of the rest)
 RUN apt update \
   && apt install --assume-yes genisoimage apt-transport-https ca-certificates curl software-properties-common \
   && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \

@@ -10,5 +10,12 @@ users:
 runcmd:
   - mount /dev/sr0 /mnt
   - tar -xzvf /mnt/docker-ce.tgz -C /tmp/
+  - tar -xzvf /mnt/docker-images.tgz -C /tmp/
   - apt install --assume-yes /tmp/docker-debs/*
   - systemctl enable --now docker
+  - docker load /docker-debs/registry.tar
+  - docker load /docker-debs/app1.tar
+  - docker push localreg:5000/app1:latest
+  - docker swarm init
+  - docker service create localreg:5000\app1:latest
+  - ...etc
