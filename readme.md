@@ -15,12 +15,12 @@
   * builds and configures each underlying host.
   * loads all pre-built docker images into a local registry.
   * Creates a swarm and loads images from registry as services.
-* Laptops deployed with a standard ubuntu20 cloud-init server image and user-data, meta-data is provided via PXE
+* Laptops deployed with a standard ubuntu20 server cloud-init image, meta-data and user-data is provided via PXE
 
 ## Notes
 * Included code loosely outlines how the inital package creation will work.
 * I have good plan for general system monitoring (daily check simplification)
 * Easier backups (centralised storage)
 * Far less complicated to produce the inital packages than before (there fore easier to sustain)
-* Almost OS agnostic (so long as it has cloud init and the non-docker application are compatible)
+* Almost OS agnostic (so long as it has cloud init and the non-docker applications are compatible)
 * Easier upgrades due to the above.
