@@ -1,0 +1,9 @@
+instance-id: master
+local-hostname: master-node
+network-interfaces: |
+  iface ens192 inet static
+  address 192.168.1.210
+  network 192.168.1.0
+  netmask 255.255.255.0
+  broadcast 192.168.1.255
+  gateway 192.168.1.1

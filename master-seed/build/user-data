@@ -1,0 +1,14 @@
+#cloud-config
+# vim:syntax=yaml
+users:
+  - default
+  - name: scrapps
+    groups: sudo
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    plain_text_passwd: Password!
+    lock_passwd: false
+runcmd:
+  - mount /dev/sr0 /mnt
+  - tar -xzvf /mnt/docker-ce.tgz -C /tmp/
+  - apt install --assume-yes /tmp/docker-debs/*
+  - systemctl enable --now docker

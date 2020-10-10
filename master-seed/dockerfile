@@ -1,0 +1,34 @@
+FROM ubuntu:focal
+
+COPY build .
+
+# Create docker images tarball
+RUN docker pull registry:latest \
+  && docker pull apline:latest \
+  && docker save registry:latest --output registry.tar \
+  && docker save apline:latest --output apline.tar \
+  && mkdir docker-images \
+  && mv *.tar docker-images  \
+  && tar -czvf docker-images.tgz docker-images \
+  && rm -r docker-images
+
+# Create master cloud-init seed.iso
+RUN apt update \
+  && apt install --assume-yes genisoimage apt-transport-https ca-certificates curl software-properties-common \
+  && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
+  && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" \
+  && sudo apt update \
+  && apt-cache depends --recurse --no-recommends \
+    --no-suggests --no-conflicts --no-breaks \
+    --no-replaces --no-enhances docker-ce \
+    |grep -v -E .*:i386.* | sed 's/    //g' \
+    |sed 's/  Depends: //g' | sed 's/ |Depends: //g' \
+    |sed 's/  PreDepends: //g' | sed 's/ |PreDepends: //g' \
+    |grep -v -E '^<' > dirty \
+  && cat dirty | sort -u > clean \
+  && apt download $(cat clean) 2>/dev/null; exit 0 \
+  && mkdir docker-debs \
+  && mv *.dev docker-debs \
+  && tar -czvf docker-ce.tgz docker-debs \
+  && genisoimage -output master-seed.iso -volid cidata -joliet -rock user-data meta-data docker-ce.tgz docker-images.tgz \
+  && rm -r docker-debs docker-ce.tgz
